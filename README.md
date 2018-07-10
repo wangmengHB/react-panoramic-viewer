@@ -6,7 +6,7 @@ this is demo to show how a panoramic image is built and viewed.
 
 
 # viewport
-
+```
 （-180,90）   ---------------------------- （0,90） ------------------------------（180,90）
       |                                                                               |
       |                                                                               |
@@ -20,7 +20,7 @@ this is demo to show how a panoramic image is built and viewed.
       |                                                                               |
       |                                                                               |
 （-180，-90） -----------------------------（0，-90）-------------------------------（180，-90）
-
+```
 
 # run demo
 
