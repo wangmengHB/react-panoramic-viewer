@@ -30,6 +30,13 @@ module.exports = {
                     'css-loader',
                     'sass-loader'
                 ]
+            },
+            {
+                test: /\.jpg$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 4000000
+                }
             }
         ]
     },
