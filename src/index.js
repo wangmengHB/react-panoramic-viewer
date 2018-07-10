@@ -6,6 +6,7 @@ const WIDTH = 360 * RESOLUTION
 const HEIGHT = 180 * RESOLUTION
 const VIEW_WIDTH = 60 * RESOLUTION
 const VIEW_HEIGHT = 60 * RESOLUTION
+const STEP = 10
 
 let sourceImg = new Image(WIDTH, HEIGHT)
 sourceImg.src = SAMPLE
@@ -60,19 +61,19 @@ sourceImg.onload = function () {
         switch (ev.keyCode) {
             // key: up
             case 38:
-                move(0, -1)
+                move(0, -STEP)
                 break
             // key: down
             case 40:
-                move(0, 1)
+                move(0, STEP)
                 break
             // key: left
             case 37:
-                move(-1, 0)
+                move(-STEP, 0)
                 break
             // key: right
             case 39:
-                move(1, 0)
+                move(STEP, 0)
                 break
     
         }
