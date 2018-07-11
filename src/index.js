@@ -3,7 +3,7 @@ import SAMPLE from './sample.jpg'
 
 const WIDTH = 840
 const HEIGHT = 420
-const STEP = 5
+const STEP = 3
 const DEG = Math.PI / 180;
 
 
@@ -31,8 +31,8 @@ sourceImg.onload = function () {
     // x: 540; y: -75
     // 150; y: 327.5
     let origin = {
-        x: 150,
-        y: 250,
+        x: (WIDTH - VIEW_WIDTH)/2,
+        y: (HEIGHT - VIEW_HEIGHT)/2,
     }
 
     move(0, 0)
@@ -187,8 +187,13 @@ sourceImg.onload = function () {
 
     document.addEventListener('mousemove', function(ev) {
         let {movementX, movementY} = ev
-        console.log(`movementX: ${movementX}`)
-        move(movementX * STEP, movementY)
+        // let screenWidth = ev.target.clientWidth
+        // let screenHeight = ev.target.clientHeight
+
+        // let offsetX = screenWidth/2 - clientX
+        // let offsetY = screenHeight/2 - clientY
+
+        move(movementX * STEP , movementY)
         
     })
 
