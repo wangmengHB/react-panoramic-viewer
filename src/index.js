@@ -1,10 +1,9 @@
 import './style.scss'
 import SAMPLE from './sample.jpg'
 
-const RESOLUTION = 2
 const WIDTH = 840
 const HEIGHT = 420
-const STEP = 11
+const STEP = 5
 const DEG = Math.PI / 180;
 
 
@@ -24,8 +23,8 @@ sourceImg.onload = function () {
     document.body.appendChild(targetCanvas)
     const VIEW_WIDTH = targetCanvas.width
     const VIEW_HEIGHT = targetCanvas.height
-    const MIN_VIEW_HEIGHT = -VIEW_HEIGHT/2 - 50
-    const MAX_VIEW_HEIGHT = HEIGHT
+    const MIN_VIEW_HEIGHT = -VIEW_HEIGHT + 1
+    const MAX_VIEW_HEIGHT = HEIGHT - VIEW_HEIGHT/2 - 1
     
     const targetCtx = targetCanvas.getContext('2d')
     
@@ -42,7 +41,7 @@ sourceImg.onload = function () {
         origin.x += deltaX
         origin.y += deltaY
         if (origin.x < 0) {
-            origin.x += (WIDTH * 10)
+            origin.x += WIDTH
         }
         origin.x = origin.x % WIDTH
         if (origin.y < MIN_VIEW_HEIGHT) {
@@ -168,17 +167,6 @@ sourceImg.onload = function () {
 
             
         }
-
-
-
-
-        
-
-
-
-
-
-
         
     }
 
@@ -186,27 +174,44 @@ sourceImg.onload = function () {
 
 
     
-    
+    let keys = {}
+    /*
+        up: 38
+        down: 40,
+        left: 37,
+        right: 39
+    */
     document.addEventListener('keydown', function(ev) {
-        switch (ev.keyCode) {
-            // key: up
-            case 38:
-                move(0, -STEP)
-                break
-            // key: down
-            case 40:
-                move(0, STEP)
-                break
-            // key: left
-            case 37:
-                move(-STEP, 0)
-                break
-            // key: right
-            case 39:
-                move(STEP, 0)
-                break
-    
+        keys[ev.keyCode] = true
+    })
+
+    document.addEventListener('mousemove', function(ev) {
+        let {movementX, movementY} = ev
+        console.log(`movementX: ${movementX}`)
+        move(movementX * STEP, movementY)
+        
+    })
+
+    document.addEventListener('keyup', function(e) {
+        if (keys[38] && keys[37]) {
+            move(-STEP, -STEP)
+        } else if (keys[38] && keys[39]) {
+            move(STEP, -STEP)
+        } else if (keys[40] && keys[37]) {
+            move(-STEP, STEP)
+        } else if (keys[40] && keys[39]) {
+            move(STEP, STEP)
+        } else if (keys[38]) {
+            move(0, -STEP)
+        } else if (keys[40]) {
+            move(0, STEP)
+        } else if (keys[37]) {
+            move(-STEP, 0)
+        } else if (keys[39]) {
+            move(STEP, 0)
         }
+
+        keys[e.keyCode] = false
     })
 
 }
@@ -259,20 +264,4 @@ function stitchImageData(source1, w1, h1, source2, w2, h2) {
     let mergeData =  ctx.getImageData(0, 0, w1 + w2, h1)
     return mergeData
 }
-
-
-class Block {
-    constructor(x, y, w, h, mirror = false) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        this.mirror = mirror
-    }
-}
-
-
-
-
-
 
