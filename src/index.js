@@ -192,32 +192,16 @@ sourceImg.onload = function () {
 
         // let offsetX = screenWidth/2 - clientX
         // let offsetY = screenHeight/2 - clientY
+       if (ev.which !== 0) {
+            console.log(`move: x:${movementX * STEP } y: ${movementY}`)
+            move(movementX * STEP , movementY)
+       }
 
-        move(movementX * STEP , movementY)
+        
         
     })
 
-    document.addEventListener('keyup', function(e) {
-        if (keys[38] && keys[37]) {
-            move(-STEP, -STEP)
-        } else if (keys[38] && keys[39]) {
-            move(STEP, -STEP)
-        } else if (keys[40] && keys[37]) {
-            move(-STEP, STEP)
-        } else if (keys[40] && keys[39]) {
-            move(STEP, STEP)
-        } else if (keys[38]) {
-            move(0, -STEP)
-        } else if (keys[40]) {
-            move(0, STEP)
-        } else if (keys[37]) {
-            move(-STEP, 0)
-        } else if (keys[39]) {
-            move(STEP, 0)
-        }
 
-        keys[e.keyCode] = false
-    })
 
 }
 
