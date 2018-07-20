@@ -174,16 +174,7 @@ sourceImg.onload = function () {
 
 
     
-    let keys = {}
-    /*
-        up: 38
-        down: 40,
-        left: 37,
-        right: 39
-    */
-    document.addEventListener('keydown', function(ev) {
-        keys[ev.keyCode] = true
-    })
+
 
     document.addEventListener('mousemove', function(ev) {
         let {movementX, movementY} = ev
@@ -196,9 +187,7 @@ sourceImg.onload = function () {
             console.log(`move: x:${movementX * STEP } y: ${movementY}`)
             move(movementX * STEP , movementY)
        }
-
-        
-        
+      
     })
 
 
