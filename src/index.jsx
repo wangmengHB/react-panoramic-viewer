@@ -1,10 +1,29 @@
-import './style.scss'
+// import './style.scss'
 import SAMPLE from './sample.jpg'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PanoramicViewer from './component/PanoramicViewer'
+
+
+const root = document.getElementById('app')
+
+ReactDOM.render(
+    <PanoramicViewer src={SAMPLE}/>,
+    root
+)
+
+
+
+
+```
 
 const WIDTH = 840
 const HEIGHT = 420
 const STEP = 3
-const DEG = Math.PI / 180;
+
+
+
+
 
 
 
@@ -49,7 +68,7 @@ sourceImg.onload = function () {
         } else if (origin.y > MAX_VIEW_HEIGHT) {
             origin.y = MAX_VIEW_HEIGHT
         }
-        console.log(`x: ${origin.x}; y: ${origin.y}`)
+        
         renderAtOrigin(origin.x, origin.y)
         
     }
@@ -184,7 +203,7 @@ sourceImg.onload = function () {
         // let offsetX = screenWidth/2 - clientX
         // let offsetY = screenHeight/2 - clientY
        if (ev.which !== 0) {
-            console.log(`move: x:${movementX * STEP } y: ${movementY}`)
+            
             move(movementX * STEP , movementY)
        }
       
@@ -243,3 +262,5 @@ function stitchImageData(source1, w1, h1, source2, w2, h2) {
     return mergeData
 }
 
+
+```

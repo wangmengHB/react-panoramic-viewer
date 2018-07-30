@@ -1,0 +1,14 @@
+.panoramic-viewer {
+    width: 100%;
+    height: 100%;
+    .source-image {
+        display: none;
+    }
+    .source-canvas {
+        display: none;
+    }
+    .viewport {
+        width: 100%;
+        height: 100%;
+    }
+}

@@ -11,7 +11,7 @@ module.exports = {
     },
     context: path.resolve(__dirname),
     entry: {
-        app: path.join(__dirname, './src/index.js')
+        app: path.join(__dirname, './src/index.jsx')
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -33,16 +33,14 @@ module.exports = {
             },
             {
                 test: /\.jpg$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 4000000
-                }
+                loader: 'url-loader'
             }
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: 'a panoramic image',
+            template: 'index.html',
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
