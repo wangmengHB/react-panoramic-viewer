@@ -13,7 +13,6 @@ export default class ImageData {
         return this.viewData
     }
 
-
     fillData(x1, y1) {
         for (let y = 0; y < this.VIEW_HEIGHT; y++) {
             for (let x = 0; x < this.VIEW_WIDTH; x++) {
@@ -28,12 +27,18 @@ export default class ImageData {
     }
 
     findPointIndex (x1, y1, x2, y2) {
-        let targetIndex = 0
-        if (x1 < this.WIDTH - this.VIEW_WIDTH && x1 >= 0) {
-            if (y1 >= 0 && y1 < this.HEIGHT - this.VIEW_HEIGHT) {
-                return targetIndex = ((y1 + y2) * this.WIDTH * 4) + ((x1 + x2) * 4)
-            }
+        let targetIndex = 0, x = x1 + x2, y = y1 + y2
+        if (y >= this.HEIGHT) {
+            y = 2 * this.HEIGHT - y
+            x = x + this.WIDTH / 2
+        } else if (y < 0) {
+            y = -y
+            x = x + this.WIDTH /2
         }
+        if (x > this.WIDTH) {
+            x = x - this.WIDTH
+        }     
+        return targetIndex = (y * this.WIDTH * 4) + x * 4
     }
 
 }

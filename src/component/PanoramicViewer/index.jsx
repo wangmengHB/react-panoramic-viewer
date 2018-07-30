@@ -1,6 +1,5 @@
 import './style.scss'
 import React from 'react'
-import ReactDom from 'react-dom'
 import PropTypes from 'prop-types'
 import ImageData from './ImageData'
 
@@ -60,7 +59,6 @@ export default class PanoramicViewer extends React.Component {
             this.VIEW_HEIGHT
         )
         this.repaint()
-
     }
 
 
@@ -69,9 +67,8 @@ export default class PanoramicViewer extends React.Component {
         if (ev.which !== 0) {         
             this.x += movementX
             this.y += movementY
-
             this.x = limitX(this.x, this.IMAGE_WIDTH)
-            
+            this.y = limitY(this.y, this.IMAGE_HEIGHT, this.VIEW_HEIGHT)
             this.repaint()
         }
     }
@@ -94,15 +91,21 @@ export default class PanoramicViewer extends React.Component {
 
 
 function limitX (x, WIDTH) {
-    debugger;
     if (x < 0 ) {
         return limitX(x + WIDTH, WIDTH)
-    }
-    if (x > WIDTH) {
+    } else if (x >= WIDTH) {
         return x % WIDTH
-    } 
+    } else {
+        return x
+    }
 }
 
-function limitY (y, HEIGHT) {
-
+function limitY (y, HEIGHT, VIEW_HEIGHT) {
+    if (y > HEIGHT + VIEW_HEIGHT /2) {
+        return HEIGHT + VIEW_HEIGHT / 2
+    } else if (y < -VIEW_HEIGHT) {
+        return -VIEW_HEIGHT
+    } else {
+        return y
+    }
 }
