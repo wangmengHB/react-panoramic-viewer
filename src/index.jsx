@@ -5,17 +5,17 @@ import ReactDOM from 'react-dom'
 import PanoramicViewer from './component/PanoramicViewer'
 
 
-const root = document.getElementById('app')
+// const root = document.getElementById('app')
 
-ReactDOM.render(
-    <PanoramicViewer src={SAMPLE}/>,
-    root
-)
-
-
+// ReactDOM.render(
+//     <PanoramicViewer src={SAMPLE}/>,
+//     root
+// )
 
 
-```
+
+
+// ```
 
 const WIDTH = 840
 const HEIGHT = 420
@@ -263,4 +263,4 @@ function stitchImageData(source1, w1, h1, source2, w2, h2) {
 }
 
 
-```
+// ```
