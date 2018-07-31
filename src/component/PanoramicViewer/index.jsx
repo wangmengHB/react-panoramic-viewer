@@ -16,11 +16,15 @@ export default class PanoramicViewer extends React.Component {
     constructor (props) {
         super(props)
         this.imageLoad = this.imageLoad.bind(this)
-        this.handMousemove = this.handMousemove.bind(this)
+        this.handleMousemove = this.handleMousemove.bind(this)
+        this.handleTouchmove = this.handleTouchmove.bind(this)
+        this.handleTouchstart = this.handleTouchstart.bind(this)
         this.x = 0
         this.y = 0
         this.imageData = null
         this.ctx = null
+        this.touchX = 0
+        this.touchY = 0
         this.state = {
             IMAGE_WIDTH: 0,
             IMAGE_HEIGHT: 0,
@@ -31,7 +35,9 @@ export default class PanoramicViewer extends React.Component {
 
     componentDidMount () {
         this.refs.sourceImage.addEventListener('load', this.imageLoad)
-        this.refs.viewport.addEventListener('mousemove', this.handMousemove)
+        this.refs.viewport.addEventListener('mousemove', this.handleMousemove)
+        this.refs.viewport.addEventListener('touchmove', this.handleTouchmove)
+        this.refs.viewport.addEventListener('touchstart', this.handleTouchstart)
     }
 
     imageLoad () {
@@ -76,8 +82,38 @@ export default class PanoramicViewer extends React.Component {
         }, 0)       
     }
 
+    handleTouchstart (e) {
+        const { clientX, clientY } = e.changedTouches[0]
+        this.touchX = clientX
+        this.touchY = clientY
+        e.preventDefault()
+    }
 
-    handMousemove (ev) {
+    handleTouchmove (e) {
+        const { IMAGE_WIDTH, IMAGE_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT } = this.state
+        if (IMAGE_WIDTH <= 0 || IMAGE_HEIGHT <= 0) {
+            console.log('image is not loaded.')
+            return;
+        }
+        const { clientX, clientY } = e.changedTouches[0]
+        
+        let moveX = clientX - this.touchX
+        let moveY = clientY - this.touchY
+
+        
+        this.x += moveX
+        this.y += moveY
+        this.x = limitX(this.x, IMAGE_WIDTH)
+        this.y = limitY(this.y, IMAGE_HEIGHT, VIEW_HEIGHT)
+        this.repaint()
+        this.touchX = clientX
+        this.touchY = clientY
+        e.preventDefault()
+    
+    }
+
+
+    handleMousemove (ev) {
         let {movementX, movementY} = ev
         const {IMAGE_WIDTH, IMAGE_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT} = this.state
         if (IMAGE_WIDTH <= 0 || IMAGE_HEIGHT <= 0) {
@@ -132,10 +168,10 @@ function limitX (x, WIDTH) {
 }
 
 function limitY (y, HEIGHT, VIEW_HEIGHT) {
-    if (y > HEIGHT + VIEW_HEIGHT /2) {
-        return HEIGHT + VIEW_HEIGHT / 2
-    } else if (y < -VIEW_HEIGHT) {
-        return -VIEW_HEIGHT
+    if (y > HEIGHT - Math.floor(VIEW_HEIGHT /2)) {
+        return HEIGHT - Math.floor(VIEW_HEIGHT / 2)
+    } else if (y < -Math.floor(VIEW_HEIGHT/2)) {
+        return -Math.floor(VIEW_HEIGHT / 2)
     } else {
         return y
     }

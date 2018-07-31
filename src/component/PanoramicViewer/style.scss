@@ -1,3 +1,10 @@
+html::-webkit-scrollbar,
+body::-webkit-scrollbar{
+	width:0;
+	height:0;
+}
+
+
 .panoramic-viewer {
     width: 100%;
     height: 100%;

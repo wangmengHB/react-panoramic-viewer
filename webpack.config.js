@@ -50,8 +50,9 @@ module.exports = {
         hot: true,
         contentBase: false, 
         compress: true,
-        host: 'localhost',
+        host: '0.0.0.0',
         port: 8080,
+        useLocalIp: true,
         open: true,
         overlay: { 
             warnings: false, 

@@ -30,10 +30,10 @@ export default class ImageData {
         let targetIndex = 0
         if (y >= this.HEIGHT) {
             y = 2 * this.HEIGHT - y
-            x = x + this.WIDTH / 2
+            x = x + Math.floor(this.WIDTH / 2)
         } else if (y < 0) {
             y = -y
-            x = x + this.WIDTH /2
+            x = x + Math.floor(this.WIDTH /2)
         }
         if (x > this.WIDTH) {
             x = x - this.WIDTH
