@@ -1,6 +1,6 @@
 export default class ImageData {
     constructor (data, width, height, viewData, viewWidth, viewHeight) {
-        this.data = data
+        this.sourceData = data
         this.WIDTH = width
         this.HEIGHT = height
         this.viewData = viewData
@@ -18,10 +18,10 @@ export default class ImageData {
             for (let x = 0; x < this.VIEW_WIDTH; x++) {
                 let index = y * this.VIEW_WIDTH * 4 + x * 4
                 let targetIndex = this.findPointIndex(x1 + x, y1 + y)
-                this.viewData.data[index] = this.data.data[targetIndex]
-                this.viewData.data[index + 1] = this.data.data[targetIndex + 1]
-                this.viewData.data[index + 2] = this.data.data[targetIndex + 2]
-                this.viewData.data[index + 3] = this.data.data[targetIndex + 3]
+                this.viewData.data[index] = this.sourceData.data[targetIndex]
+                this.viewData.data[index + 1] = this.sourceData.data[targetIndex + 1]
+                this.viewData.data[index + 2] = this.sourceData.data[targetIndex + 2]
+                this.viewData.data[index + 3] = this.sourceData.data[targetIndex + 3]
             }
         } 
     }
