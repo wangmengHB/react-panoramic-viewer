@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom'
 import PanoramicViewer from './component/PanoramicViewer'
 
 
-const root = document.getElementById('app')
-
 ReactDOM.render(
-    <PanoramicViewer src={SAMPLE}/>,
-    root
+    <PanoramicViewer 
+      imageUrl={SAMPLE}
+    />,
+    document.getElementById('app')
 )

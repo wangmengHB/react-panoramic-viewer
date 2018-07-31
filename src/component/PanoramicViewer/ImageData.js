@@ -8,16 +8,16 @@ export default class ImageData {
         this.VIEW_HEIGHT = viewHeight
     }
 
-    getData (x, y) {
-        this.fillData(x, y)
+    getDataAt (x, y) {
+        this.fillDataAt(x, y)
         return this.viewData
     }
 
-    fillData(x1, y1) {
+    fillDataAt(x1, y1) {
         for (let y = 0; y < this.VIEW_HEIGHT; y++) {
             for (let x = 0; x < this.VIEW_WIDTH; x++) {
                 let index = y * this.VIEW_WIDTH * 4 + x * 4
-                let targetIndex = this.findPointIndex(x1, y1, x, y)
+                let targetIndex = this.findPointIndex(x1 + x, y1 + y)
                 this.viewData.data[index] = this.data.data[targetIndex]
                 this.viewData.data[index + 1] = this.data.data[targetIndex + 1]
                 this.viewData.data[index + 2] = this.data.data[targetIndex + 2]
@@ -26,8 +26,8 @@ export default class ImageData {
         } 
     }
 
-    findPointIndex (x1, y1, x2, y2) {
-        let targetIndex = 0, x = x1 + x2, y = y1 + y2
+    findPointIndex (x, y) {
+        let targetIndex = 0
         if (y >= this.HEIGHT) {
             y = 2 * this.HEIGHT - y
             x = x + this.WIDTH / 2

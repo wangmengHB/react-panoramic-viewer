@@ -10,21 +10,23 @@ const VALID_VERTICAL_VIEWPORT = 60
 
 export default class PanoramicViewer extends React.Component {
     static propTypes = {
-        src: PropTypes.string,
+        imageUrl: PropTypes.string,
     }
 
     constructor (props) {
         super(props)
         this.imageLoad = this.imageLoad.bind(this)
         this.handMousemove = this.handMousemove.bind(this)
-        this.IMAGE_WIDTH = 0
-        this.IMAGE_HEIGHT = 0
-        this.VIEW_WIDTH = 0
-        this.VIEW_HEIGHT = 0
         this.x = 0
         this.y = 0
         this.imageData = null
         this.ctx = null
+        this.state = {
+            IMAGE_WIDTH: 0,
+            IMAGE_HEIGHT: 0,
+            VIEW_WIDTH: 0,
+            VIEW_HEIGHT: 0
+        }
     }
 
     componentDidMount () {
@@ -33,57 +35,86 @@ export default class PanoramicViewer extends React.Component {
     }
 
     imageLoad () {
-        const {sourceImage, sourceData, viewport} = this.refs
-        sourceData.width = sourceImage.width
-        sourceData.height = sourceImage.height
-        this.IMAGE_WIDTH = sourceImage.width
-        this.IMAGE_HEIGHT = sourceImage.height
-        console.log(`IMAGE_WIDTH: ${this.IMAGE_WIDTH};IMAGE_HEIGHT:${this.IMAGE_HEIGHT}`)
-        viewport.width = this.VIEW_WIDTH = Math.floor(this.IMAGE_WIDTH * VALID_HORIZONTAL_VIEWPORT / 360)
-        viewport.height = this.VIEW_HEIGHT = Math.floor(this.IMAGE_HEIGHT * VALID_VERTICAL_VIEWPORT / 180)
-        console.log(`VIEW_WIDTH: ${this.VIEW_WIDTH};VIEW_HEIGHT:${this.VIEW_HEIGHT}`)
-        this.x = Math.floor((this.IMAGE_WIDTH - this.VIEW_WIDTH)/2)
-        this.y = Math.floor((this.IMAGE_HEIGHT - this.VIEW_HEIGHT)/2)
+        const {sourceImage, sourceCanvas, viewport} = this.refs
+        const IMAGE_WIDTH = sourceImage.width
+        const IMAGE_HEIGHT = sourceImage.height       
+        const VIEW_WIDTH = Math.floor(IMAGE_WIDTH * VALID_HORIZONTAL_VIEWPORT / 360)
+        const VIEW_HEIGHT = Math.floor(IMAGE_HEIGHT * VALID_VERTICAL_VIEWPORT / 180)
+        this.x = Math.floor((IMAGE_WIDTH - VIEW_WIDTH)/2)
+        this.y = Math.floor((IMAGE_HEIGHT - VIEW_HEIGHT)/2)
+        console.log(`IMAGE_WIDTH: ${IMAGE_WIDTH};IMAGE_HEIGHT:${IMAGE_HEIGHT}`)
+        console.log(`VIEW_WIDTH: ${VIEW_WIDTH};VIEW_HEIGHT:${VIEW_HEIGHT}`)      
         console.log(`x: ${this.x}; y:${this.y}`)
-        const ctx = sourceData.getContext('2d')
-        ctx.drawImage(sourceImage, 0, 0, sourceImage.width, sourceImage.height)
-        const data = ctx.getImageData(0, 0, sourceImage.width, sourceImage.height)      
-        this.ctx = viewport.getContext('2d')
-        const viewData = this.ctx.createImageData(this.VIEW_WIDTH, this.VIEW_HEIGHT)
-        this.imageData = new ImageData(
-            data, 
-            sourceImage.width, 
-            sourceImage.height, 
-            viewData, 
-            this.VIEW_WIDTH,
-            this.VIEW_HEIGHT
-        )
-        this.repaint()
+
+        this.setState({
+            IMAGE_WIDTH: IMAGE_WIDTH,
+            IMAGE_HEIGHT: IMAGE_HEIGHT,
+            VIEW_WIDTH: VIEW_WIDTH,
+            VIEW_HEIGHT: VIEW_HEIGHT
+        })
+
+        // 由于必须要设置canvas的宽度和高度，但是在微信小程序中
+        // 不能直接操作DOM，只能通过修改vm，让DOM发生变化.
+        // 所以需要将初始化过程分为两步执行
+        
+        setTimeout(() => {
+            const {IMAGE_WIDTH, IMAGE_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT} = this.state
+            const ctx = sourceCanvas.getContext('2d')
+            ctx.drawImage(sourceImage, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT)
+            const data = ctx.getImageData(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT)      
+            this.ctx = viewport.getContext('2d')
+            const viewData = this.ctx.createImageData(VIEW_WIDTH, VIEW_HEIGHT)
+            this.imageData = new ImageData(
+                data, 
+                IMAGE_WIDTH, 
+                IMAGE_HEIGHT, 
+                viewData, 
+                VIEW_WIDTH,
+                VIEW_HEIGHT
+            )
+            this.repaint()
+        }, 0)       
     }
 
 
     handMousemove (ev) {
         let {movementX, movementY} = ev
+        const {IMAGE_WIDTH, IMAGE_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT} = this.state
+        if (IMAGE_WIDTH <= 0 || IMAGE_HEIGHT <= 0) {
+            console.log('image is not loaded.')
+            return;
+        }
         if (ev.which !== 0) {         
             this.x += movementX
             this.y += movementY
-            this.x = limitX(this.x, this.IMAGE_WIDTH)
-            this.y = limitY(this.y, this.IMAGE_HEIGHT, this.VIEW_HEIGHT)
+            this.x = limitX(this.x, IMAGE_WIDTH)
+            this.y = limitY(this.y, IMAGE_HEIGHT, VIEW_HEIGHT)
             this.repaint()
         }
     }
 
     repaint () {
-        const view = this.imageData.getData(this.x, this.y)
-        this.ctx.putImageData(view, 0, 0)
+        const data = this.imageData.getDataAt(this.x, this.y)
+        this.ctx.putImageData(data, 0, 0)
     }
 
     render () {
+        let {IMAGE_WIDTH, IMAGE_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT} = this.state
         return (
           <div className="panoramic-viewer">
-            <img ref="sourceImage" className="source-image" src={this.props.src}/>
-            <canvas ref="sourceData" className="source-canvas"/>
-            <canvas ref="viewport" className="viewport"/>
+            <img ref="sourceImage" className="source-image" src={this.props.imageUrl}/>
+            <canvas 
+              ref="sourceCanvas" 
+              className="source-canvas"
+              width={IMAGE_WIDTH}
+              height={IMAGE_HEIGHT}
+            />
+            <canvas 
+              ref="viewport" 
+              className="viewport"
+              width={VIEW_WIDTH}
+              height={VIEW_HEIGHT}
+            />
           </div>
         )
     }
