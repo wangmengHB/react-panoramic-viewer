@@ -7,6 +7,7 @@ import PanoramicViewer from './component/PanoramicViewer'
 ReactDOM.render(
     <PanoramicViewer 
       imageUrl={SAMPLE}
+      fullscreen={true}
     />,
     document.getElementById('app')
 )
