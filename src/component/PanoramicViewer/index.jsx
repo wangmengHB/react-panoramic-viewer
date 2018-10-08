@@ -91,6 +91,14 @@ export default class PanoramicViewer extends React.Component {
         this.setState({
             imageLoaded: true
         })
+
+        let node = this.refs.labelgroup;
+        const anchor1 = document.createElement('div');
+        anchor1.className = "label";
+        anchor1.innerText = "North";
+
+        node.appendChild(anchor1);
+
                
     }
 
@@ -164,6 +172,9 @@ export default class PanoramicViewer extends React.Component {
               ref="viewport" 
               className="viewport"
             />
+            <div ref="labelgroup">
+                North
+            </div>
           </div>
         )
     }
