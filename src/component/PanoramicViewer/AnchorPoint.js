@@ -4,12 +4,13 @@ export default class AnchorPoint {
 
     // x, y 表示球面坐标系的 维度 和 精度， 最大值为 1
 
-    constructor (x, y, content, nextUrl, renderNext) {
+    constructor (x, y, content, nextUrl, nextAnchors, renderNext) {
         this.x = x;
         this.y = y;
         this.content = content;
 
         this.nextUrl = nextUrl;
+        this.nextAnchors = nextAnchors || [];
         this.renderNext = renderNext;
 
         this.IMAGE_WIDTH = 0;
@@ -38,8 +39,7 @@ export default class AnchorPoint {
         this.ele = ele;
 
         ele.addEventListener('click', () => {
-            debugger;
-            this.renderNext(this.nextUrl);
+            this.renderNext(this.nextUrl, this.nextAnchors);
         })
 
 
