@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ImageData from './ImageData'
 import {limitX, limitY, calcViewSize} from './util'
+import AnchorPoint from './AnchorPoint'
 
 
 
@@ -16,6 +17,7 @@ export default class PanoramicViewer extends React.Component {
         fullsceen: PropTypes.bool,
         width: PropTypes.number,
         height: PropTypes.number,
+        // anchors: PropTypes.arrayOf(AnchorPoint)
     }
 
     constructor (props) {
@@ -34,9 +36,10 @@ export default class PanoramicViewer extends React.Component {
         this.IMAGE_HEIGHT = 0
         this.VIEW_WIDTH = 0
         this.VIEW_HEIGHT= 0
-        this.state = {
-            imageLoaded: false
-        }
+        
+        this.imageLoaded = false;
+        
+        this.anchors = [];
     }
 
     componentDidMount () {
@@ -87,18 +90,21 @@ export default class PanoramicViewer extends React.Component {
             VIEW_WIDTH,
             VIEW_HEIGHT
         )
-        this.repaint()
-        this.setState({
-            imageLoaded: true
+        
+        const {anchors} = this.props;
+        let node = this.refs.labelgroup;
+        anchors.forEach(anchor => {
+            const ele = anchor.createAnchorElement(
+                this.IMAGE_WIDTH,
+                this.IMAGE_HEIGHT,
+                this.VIEW_WIDTH,
+                this.VIEW_HEIGHT
+            );
+            node.appendChild(ele);
         })
 
-        let node = this.refs.labelgroup;
-        const anchor1 = document.createElement('div');
-        anchor1.className = "label";
-        anchor1.innerText = "North";
-
-        node.appendChild(anchor1);
-
+        this.repaint();
+        this.imageLoaded = true;
                
     }
 
@@ -110,8 +116,7 @@ export default class PanoramicViewer extends React.Component {
     }
 
     handleTouchmove (e) {
-        const { imageLoaded } = this.state
-        if (!imageLoaded) {
+        if (!this.imageLoaded) {
             console.log('image is not loaded.')
             return;
         }
@@ -135,8 +140,7 @@ export default class PanoramicViewer extends React.Component {
 
     handleMousemove (ev) {
         let {movementX, movementY} = ev
-        const { imageLoaded } = this.state
-        if (!imageLoaded) {
+        if (!this.imageLoaded) {
             console.log('image is not loaded.')
             return;
         }
@@ -152,10 +156,14 @@ export default class PanoramicViewer extends React.Component {
     repaint () {
         const data = this.imageData.getDataAt(this.x, this.y)
         this.ctx.putImageData(data, 0, 0)
+        console.log(`x: ${this.x}; y:${this.y}`)
+        const {anchors} = this.props;
+        anchors.forEach(anchor => {
+            anchor.moveAt(this.x, this.y);
+        })
     }
 
     render () {
-        const {imageLoaded} = this.state
         const {fullsceen} = this.props
         const cls = `panoramic-viewer${fullsceen?' fullscreen':''}`
 
